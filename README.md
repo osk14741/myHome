@@ -1,2 +1,2 @@
 # myHome
-my cyber home
+my home
