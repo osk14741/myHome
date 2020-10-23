@@ -55,7 +55,7 @@ class Car {
 }
 ```
 
-이렇게 될 것이다. 프로젝트가 커지면 커질수록 한땀한땀 수정해야하는 애물단지가 될 것이다.
+이렇게 될 것이다. 프로젝트가 커지면 커질수록 한땀한땀 수정해야하는 애물단지가 된다.
 
 하지만 외부에서 주입해준다면 어떨까?
 
@@ -73,3 +73,67 @@ class Car() {
 }
 ```
 
+![](https://github.com/osk14741/myHome/blob/main/Spring/IMG/DI_1.jpg)
+
+이런 식이다.
+
+그렇다면 정작 중요한 Spring에서는 어떻게 사용하나?
+
+Car에서 직접 객체를 생성하는 게 아니라 외부(IOC 컨테이너)에서 생성된 Tier를 Setter나 Constructor를 이용하여 넣어주게 된다.
+
+```java
+package com.my.car;
+
+public class Tier {
+	String color;
+        
+	public void setColor(String color) {
+		this.color = color;
+	}
+	
+    public void wheel(){
+        Log.debug("구른다.");
+    }
+}
+public class Car {
+	Tier tier;
+	
+	public void setTier(Tier tier) {
+		this.tier = tier;
+	}
+    
+    public drive(){
+        this.tier.wheel();
+    }
+}
+
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+	<bean id="car" class="com.my.car.Car">
+		<property name="tier" ref="tier"/>
+	</bean>
+
+	<bean id="tier" class="com.my.car.Tier">
+		<property name="color" value="Black"/>
+	</bean>
+	
+</beans>
+```
+
+setter를 통해 bean을 주입해주는 것이다.(constructor를 통해서도 주입이 가능하다.)
+
+| 이름  | 내용                     |
+| ----- | ------------------------ |
+| id    | 고유한 식별 id           |
+| class | 그 클래스의 package 위치 |
+| name  | setter의 이름            |
+| value | 주입할 값                |
+| ref   | 참조할 id 값             |
+
+Java 코드와는 다르게 바로바로 확확 보여주지 않으니 항상 따라가보는 습관을 가져야 할 것 같다. 솔직히 초반에 난 에러의 1/3은 대소문자 혹은 오타의 문제였다...
